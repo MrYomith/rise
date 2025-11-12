@@ -108,9 +108,10 @@ const Home: React.FC<HomeProps> = ({ onSectionChange }) => {
       {/* Home Section - Hero */}
       <section id="home" className="relative w-full h-screen overflow-hidden">
         <div
-          className="fixed top-0 left-0 w-full h-screen overflow-hidden pointer-events-none"
+          className="fixed top-0 left-0 w-full h-screen overflow-hidden pointer-events-none transition-opacity duration-500"
           style={{
-            display: scrollProgress >= 1 ? 'none' : 'block'
+            opacity: scrollProgress >= 1 ? 0 : 1,
+            visibility: scrollProgress >= 1 ? 'hidden' : 'visible'
           }}
         >
           {/* Background Image with Animation */}
@@ -178,7 +179,7 @@ const Home: React.FC<HomeProps> = ({ onSectionChange }) => {
       </section>
 
       {/* About Us Section */}
-      <section id="about" className="w-full py-16 sm:py-20 md:py-24 lg:py-32 relative bg-black">
+      <section id="about" className="w-full py-8 sm:py-12 md:py-20 lg:py-28 relative bg-black">
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
           <Particles
             particleColors={['#ffffff', '#ffffff']}
@@ -192,7 +193,7 @@ const Home: React.FC<HomeProps> = ({ onSectionChange }) => {
           />
         </div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 relative z-10">
-          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-center mb-8 sm:mb-12 md:mb-16 text-white" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+          <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-center mb-6 sm:mb-8 md:mb-12 text-white" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
             About Us
           </h2>
 
@@ -226,18 +227,18 @@ const Home: React.FC<HomeProps> = ({ onSectionChange }) => {
         >
           {/* Rise Construction Card */}
           <ScrollStackItem itemClassName="!bg-transparent !p-0 !h-auto !shadow-none">
-            <div className="w-full pb-4 sm:pb-6 md:pb-8">
+            <div className="w-full">
               <div className="w-full min-h-[50vh] sm:min-h-[45vh] md:min-h-[40vh] lg:h-[50vh] flex items-center justify-center rounded-[20px] sm:rounded-[30px] md:rounded-[40px] lg:rounded-[50px] py-4 sm:py-6 md:py-10 lg:py-12 relative overflow-hidden" style={{ backgroundColor: '#191D23' }}>
-                <div className="w-full max-w-7xl flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 px-3 sm:px-4 md:px-8">
+                <div className="w-full max-w-7xl flex flex-col md:flex-row justify-between items-center gap-2 sm:gap-3 md:gap-6 lg:gap-8 px-3 sm:px-4 md:px-8">
                   <div className="w-full max-w-md sm:max-w-lg md:max-w-md lg:max-w-xl xl:max-w-2xl md:pl-4 lg:pl-8 xl:pl-12 order-1">
                     <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-5xl xl:text-6xl font-light text-white text-center md:text-left mb-2 sm:mb-3 md:mb-4 lg:mb-6 xl:mb-8 break-words" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                       Rise Construction
                     </h2>
-                    <p className="text-xs sm:text-sm md:text-sm lg:text-base xl:text-xl text-white text-center md:text-left leading-relaxed md:leading-snug lg:leading-relaxed xl:leading-loose px-1 sm:px-2 md:px-0 break-words">
+                    <p className="text-xs sm:text-sm md:text-sm lg:text-base xl:text-xl text-white text-center md:text-left leading-relaxed md:leading-snug lg:leading-relaxed xl:leading-loose break-words">
                       Building the future with innovative construction solutions. From residential to commercial projects, we deliver excellence in every structure.
                     </p>
                   </div>
-                  <div className="flex-shrink-0 order-2 w-full md:w-auto flex justify-center md:justify-end mt-4 sm:mt-6 md:mt-0 md:-mr-8 lg:-mr-16 xl:-mr-32">
+                  <div className="flex-shrink-0 order-2 w-full md:w-auto flex justify-center md:justify-end md:-mr-8 lg:-mr-16 xl:-mr-32">
                     <img
                       src="/excavator.png"
                       alt="Construction Excavator"
@@ -251,10 +252,10 @@ const Home: React.FC<HomeProps> = ({ onSectionChange }) => {
 
           {/* Rise Architecture Card */}
           <ScrollStackItem itemClassName="!bg-transparent !p-0 !h-auto !shadow-none">
-            <div className="w-full pb-4 sm:pb-6 md:pb-8">
+            <div className="w-full">
               <div className="w-full min-h-[50vh] sm:min-h-[45vh] md:min-h-[40vh] lg:h-[50vh] flex items-center justify-center rounded-[20px] sm:rounded-[30px] md:rounded-[40px] lg:rounded-[50px] py-4 sm:py-6 md:py-10 lg:py-12 relative overflow-hidden" style={{ backgroundColor: '#57707A' }}>
-                <div className="w-full max-w-7xl flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 px-3 sm:px-4 md:px-8">
-                  <div className="flex-shrink-0 w-full md:w-auto flex justify-center md:justify-start mt-4 sm:mt-6 md:mt-0 md:-ml-8 lg:-ml-16 xl:-ml-32 md:order-1">
+                <div className="w-full max-w-7xl flex flex-col md:flex-row justify-between items-center gap-2 sm:gap-3 md:gap-6 lg:gap-8 px-3 sm:px-4 md:px-8">
+                  <div className="flex-shrink-0 w-full md:w-auto flex justify-center md:justify-start md:-ml-8 lg:-ml-16 xl:-ml-32 md:order-1">
                     <img
                       src="/architecture-house.png"
                       alt="Architecture House"
@@ -265,7 +266,7 @@ const Home: React.FC<HomeProps> = ({ onSectionChange }) => {
                     <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-5xl xl:text-6xl font-light text-white text-center md:text-right mb-2 sm:mb-3 md:mb-4 lg:mb-6 xl:mb-8 break-words" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                       Rise Architecture
                     </h2>
-                    <p className="text-xs sm:text-sm md:text-sm lg:text-base xl:text-xl text-white text-center md:text-right leading-relaxed md:leading-snug lg:leading-relaxed xl:leading-loose px-1 sm:px-2 md:px-0 break-words">
+                    <p className="text-xs sm:text-sm md:text-sm lg:text-base xl:text-xl text-white text-center md:text-right leading-relaxed md:leading-snug lg:leading-relaxed xl:leading-loose break-words">
                       Innovative architectural designs that blend aesthetics with functionality. Creating spaces that inspire and endure.
                     </p>
                   </div>
@@ -276,18 +277,18 @@ const Home: React.FC<HomeProps> = ({ onSectionChange }) => {
 
           {/* Rise AI Card */}
           <ScrollStackItem itemClassName="!bg-transparent !p-0 !h-auto !shadow-none">
-            <div className="w-full pb-4 sm:pb-6 md:pb-8">
+            <div className="w-full">
               <div className="w-full min-h-[50vh] sm:min-h-[45vh] md:min-h-[40vh] lg:h-[50vh] flex items-center justify-center rounded-[20px] sm:rounded-[30px] md:rounded-[40px] lg:rounded-[50px] py-4 sm:py-6 md:py-10 lg:py-12 relative overflow-hidden" style={{ backgroundColor: '#7B919C' }}>
-                <div className="w-full max-w-7xl flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 px-3 sm:px-4 md:px-8">
+                <div className="w-full max-w-7xl flex flex-col md:flex-row justify-between items-center gap-2 sm:gap-3 md:gap-6 lg:gap-8 px-3 sm:px-4 md:px-8">
                   <div className="w-full max-w-md sm:max-w-lg md:max-w-md lg:max-w-xl xl:max-w-2xl md:pl-4 lg:pl-8 xl:pl-12 order-1">
                     <h2 className="text-2xl sm:text-3xl md:text-3xl lg:text-5xl xl:text-6xl font-light text-white text-center md:text-left mb-2 sm:mb-3 md:mb-4 lg:mb-6 xl:mb-8 break-words" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                       Rise AI
                     </h2>
-                    <p className="text-xs sm:text-sm md:text-sm lg:text-base xl:text-xl text-white text-center md:text-left leading-relaxed md:leading-snug lg:leading-relaxed xl:leading-loose px-1 sm:px-2 md:px-0 break-words">
+                    <p className="text-xs sm:text-sm md:text-sm lg:text-base xl:text-xl text-white text-center md:text-left leading-relaxed md:leading-snug lg:leading-relaxed xl:leading-loose break-words">
                       Cutting-edge artificial intelligence solutions transforming industries. Smart technology for a smarter future.
                     </p>
                   </div>
-                  <div className="flex-shrink-0 order-2 w-full md:w-auto flex justify-center md:justify-end mt-4 sm:mt-6 md:mt-0 md:-mr-8 lg:-mr-16 xl:-mr-32">
+                  <div className="flex-shrink-0 order-2 w-full md:w-auto flex justify-center md:justify-end md:-mr-8 lg:-mr-16 xl:-mr-32">
                     <img
                       src="/ai-hand.png"
                       alt="AI Hand"
@@ -301,9 +302,9 @@ const Home: React.FC<HomeProps> = ({ onSectionChange }) => {
 
           {/* Rise Aluminium Card */}
           <ScrollStackItem itemClassName="!bg-transparent !p-0 !h-auto !shadow-none">
-            <div className="w-full pb-4 sm:pb-6 md:pb-8">
+            <div className="w-full">
               <div className="w-full min-h-[50vh] sm:min-h-[45vh] md:min-h-[40vh] lg:h-[50vh] flex items-center justify-center rounded-[20px] sm:rounded-[30px] md:rounded-[40px] lg:rounded-[50px] py-4 sm:py-6 md:py-10 lg:py-12 relative overflow-hidden" style={{ backgroundColor: '#989DAA' }}>
-                <div className="w-full max-w-7xl flex flex-col md:flex-row justify-between items-center gap-3 sm:gap-4 md:gap-6 lg:gap-8 px-3 sm:px-4 md:px-8">
+                <div className="w-full max-w-7xl flex flex-col md:flex-row justify-between items-center gap-2 sm:gap-3 md:gap-6 lg:gap-8 px-3 sm:px-4 md:px-8">
                   <div className="flex-shrink-0 w-full md:w-auto flex justify-center md:justify-start md:-ml-8 lg:-ml-16 xl:-ml-32 md:order-1">
                     <img
                       src="/aluminium-tubes.png"
@@ -315,7 +316,7 @@ const Home: React.FC<HomeProps> = ({ onSectionChange }) => {
                     <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-light text-white text-center md:text-right mb-2 sm:mb-3 md:mb-6 lg:mb-7 xl:mb-8 break-words" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                       Rise Aluminium
                     </h2>
-                    <p className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-white text-center md:text-right leading-relaxed md:leading-relaxed lg:leading-relaxed xl:leading-loose px-1 sm:px-2 md:px-0 break-words">
+                    <p className="text-xs sm:text-sm md:text-base lg:text-lg xl:text-xl text-white text-center md:text-right leading-relaxed md:leading-relaxed lg:leading-relaxed xl:leading-loose break-words">
                       Premium aluminium fabrication and installation services. Quality materials for lasting performance.
                     </p>
                   </div>
@@ -330,24 +331,30 @@ const Home: React.FC<HomeProps> = ({ onSectionChange }) => {
       <section id="contact" className="w-full min-h-screen bg-black relative overflow-hidden flex items-center justify-center pb-0">
         {/* Blurred Background Image */}
         <div
-          className="absolute inset-0 w-full h-full min-h-screen"
+          className="absolute w-full"
           style={{
+            top: 0,
+            left: 0,
+            right: 0,
+            bottom: '-50px',
+            minHeight: '200vh',
+            height: '200vh',
             backgroundImage: 'url(/nature.png)',
             backgroundSize: 'cover',
-            backgroundPosition: 'center',
+            backgroundPosition: 'center top',
             filter: 'blur(10px)',
-            transform: 'scale(1.1)'
+            transform: 'scale(1.15)'
           }}
         />
-        <div className="absolute inset-0 bg-black/40 min-h-screen"></div>
+        <div className="absolute w-full h-full" style={{ top: 0, left: 0, right: 0, bottom: '-50px', minHeight: '200vh', backgroundColor: 'rgba(0, 0, 0, 0.4)' }}></div>
 
-        <div className="w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-12 relative z-10 flex flex-col justify-center py-16 sm:py-20 md:py-24">
-          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-white text-center mb-8 sm:mb-10 md:mb-12 lg:mb-16" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
+        <div className="w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-24 relative z-10 flex flex-col justify-center py-8 sm:py-12 md:py-16">
+          <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-white text-center mb-6 sm:mb-8 md:mb-10 lg:mb-12" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
             Let's get in touch.
           </h2>
 
           {/* Contact Card Container */}
-          <div className="max-w-7xl mx-auto w-full flex items-center pb-16 sm:pb-20">
+          <div className="max-w-7xl mx-auto w-full flex items-center pb-8 sm:pb-12">
             <GlassSurface
               width="100%"
               height="auto"
@@ -364,9 +371,9 @@ const Home: React.FC<HomeProps> = ({ onSectionChange }) => {
               blueOffset={20}
               className="!p-0 hover:shadow-[0_8px_40px_0_rgba(31,38,135,0.5)] transition-all duration-500 overflow-hidden w-full"
             >
-              <div className="flex flex-col lg:flex-row min-h-[400px] sm:min-h-[500px] lg:min-h-[600px]">
+              <div className="flex flex-col lg:flex-row min-h-[350px] sm:min-h-[450px] lg:min-h-[550px]">
                 {/* Left Side - Image */}
-                <div className="w-full lg:w-2/5 relative overflow-hidden min-h-[250px] sm:min-h-[300px] lg:min-h-full">
+                <div className="w-full lg:w-2/5 relative overflow-hidden min-h-[200px] sm:min-h-[250px] lg:min-h-full">
                   <img
                     src="/nature.png"
                     alt="Nature Background"
@@ -375,9 +382,9 @@ const Home: React.FC<HomeProps> = ({ onSectionChange }) => {
                   <div className="absolute inset-0 bg-gradient-to-b lg:bg-gradient-to-r from-black/70 to-black/50"></div>
 
                   {/* Text Content Overlay */}
-                  <div className="absolute inset-0 flex flex-col justify-center p-6 sm:p-8 md:p-10 lg:p-12 text-white">
-                    <div className="space-y-6 sm:space-y-8">
-                      <div className="space-y-4 sm:space-y-5">
+                  <div className="absolute inset-0 flex flex-col justify-center p-4 sm:p-6 md:p-8 lg:p-10 text-white">
+                    <div className="space-y-4 sm:space-y-6">
+                      <div className="space-y-3 sm:space-y-4">
                         <h3 className="text-3xl sm:text-4xl lg:text-5xl font-light leading-tight" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
                           Get in Touch
                         </h3>
@@ -416,8 +423,8 @@ const Home: React.FC<HomeProps> = ({ onSectionChange }) => {
                 </div>
 
                 {/* Right Side - Contact Form */}
-                <div className="w-full lg:w-3/5 p-6 sm:p-8 md:p-10 lg:p-14 xl:p-16 flex flex-col justify-center">
-                  <form onSubmit={handleContactSubmit} className="space-y-5 sm:space-y-6 md:space-y-8 lg:space-y-10">
+                <div className="w-full lg:w-3/5 p-4 sm:p-6 md:p-8 lg:p-12 xl:p-14 flex flex-col justify-center">
+                  <form onSubmit={handleContactSubmit} className="space-y-4 sm:space-y-5 md:space-y-6 lg:space-y-8">
                 <div>
                   <input
                     type="text"
