@@ -7,7 +7,7 @@ const LoadingPage: React.FC = () => {
         <img
           src="/rise-logo.png"
           alt="The Rise AI Logo"
-          className="max-w-[10vw] max-h-[10vh] object-contain"
+          className="max-w-[40vw] max-h-[40vh] sm:max-w-[30vw] sm:max-h-[30vh] md:max-w-[20vw] md:max-h-[20vh] lg:max-w-[10vw] lg:max-h-[10vh] object-contain"
         />
       </div>
     </div>

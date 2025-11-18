@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { sendChatMessage } from '../services/api';
 import GlassSurface from '../components/GlassSurface';
+import MarkdownMessage from '../components/MarkdownMessage';
 
 interface Message {
   id: string;
@@ -15,8 +16,14 @@ export default function ChatPage() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [isListening, setIsListening] = useState(false);
   const [threadId] = useState(() => `thread_${Date.now()}`);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const recognitionRef = useRef<any>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
+  const animationFrameRef = useRef<number | null>(null);
+  const [audioLevels, setAudioLevels] = useState<number[]>(new Array(20).fill(0));
 
   useEffect(() => {
     // Prevent body scrolling
@@ -25,22 +32,78 @@ export default function ChatPage() {
     document.body.style.position = 'fixed';
     document.body.style.width = '100%';
 
+    // Initialize speech recognition
+    if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+      const SpeechRecognition = (window as any).webkitSpeechRecognition || (window as any).SpeechRecognition;
+      recognitionRef.current = new SpeechRecognition();
+      recognitionRef.current.continuous = false;
+      recognitionRef.current.interimResults = true;
+      recognitionRef.current.lang = 'en-US';
+
+      recognitionRef.current.onresult = (event: any) => {
+        let finalTranscript = '';
+        let interimTranscript = '';
+
+        for (let i = event.resultIndex; i < event.results.length; i++) {
+          const transcript = event.results[i][0].transcript;
+          if (event.results[i].isFinal) {
+            finalTranscript += transcript;
+          } else {
+            interimTranscript += transcript;
+          }
+        }
+
+        if (finalTranscript) {
+          setInputValue((prev) => {
+            const newValue = prev + (prev ? ' ' : '') + finalTranscript;
+            console.log('Final transcript:', finalTranscript);
+            console.log('New input value:', newValue);
+            return newValue;
+          });
+        }
+      };
+
+      recognitionRef.current.onerror = (event: any) => {
+        console.error('Speech recognition error:', event.error);
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onend = () => {
+        console.log('Speech recognition ended');
+        setIsListening(false);
+      };
+
+      recognitionRef.current.onstart = () => {
+        console.log('Speech recognition started');
+      };
+    }
+
     return () => {
       document.body.style.overflow = '';
       document.body.style.height = '';
       document.body.style.position = '';
       document.body.style.width = '';
+      if (recognitionRef.current) {
+        recognitionRef.current.stop();
+      }
     };
   }, []);
 
   const scrollToBottom = () => {
-    setTimeout(() => {
+    // Scroll to make sure latest message is fully visible, previous messages scroll up
+    const scroll = () => {
       messagesEndRef.current?.scrollIntoView({
         behavior: 'smooth',
         block: 'end',
         inline: 'nearest'
       });
-    }, 100);
+    };
+
+    // Immediate scroll
+    scroll();
+    // Delayed scroll to ensure DOM has updated
+    setTimeout(scroll, 100);
+    setTimeout(scroll, 300);
   };
 
   useEffect(() => {
@@ -64,6 +127,9 @@ export default function ChatPage() {
     setInputValue('');
     setIsLoading(true);
 
+    // Scroll immediately after user message
+    requestAnimationFrame(() => scrollToBottom());
+
     try {
       // Call backend API
       const response = await sendChatMessage({
@@ -79,7 +145,7 @@ export default function ChatPage() {
       };
       setMessages((prev) => [...prev, botMessage]);
       // Ensure scroll after bot message
-      setTimeout(() => scrollToBottom(), 150);
+      requestAnimationFrame(() => scrollToBottom());
     } catch (error) {
       console.error('Failed to send message:', error);
       const errorMessage: Message = {
@@ -101,8 +167,147 @@ export default function ChatPage() {
     }
   };
 
+  const stopAudioVisualization = () => {
+    if (animationFrameRef.current) {
+      cancelAnimationFrame(animationFrameRef.current);
+      animationFrameRef.current = null;
+    }
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+    setAudioLevels(new Array(20).fill(0));
+  };
+
+  const visualizeAudio = () => {
+    if (!analyserRef.current) return;
+
+    const bufferLength = analyserRef.current.frequencyBinCount;
+    const dataArray = new Uint8Array(bufferLength);
+    analyserRef.current.getByteFrequencyData(dataArray);
+
+    // Calculate levels for 20 bars with more detail
+    const barCount = 20;
+    const levels = [];
+    const samplesPerBar = Math.floor(bufferLength / barCount);
+
+    for (let i = 0; i < barCount; i++) {
+      const start = i * samplesPerBar;
+      const end = start + samplesPerBar;
+      const barData = dataArray.slice(start, end);
+
+      // Use RMS (root mean square) for more accurate representation
+      const sumSquares = barData.reduce((sum, val) => sum + val * val, 0);
+      const rms = Math.sqrt(sumSquares / barData.length);
+
+      // Apply exponential scaling for better visual representation
+      const normalized = rms / 255;
+      const scaled = Math.pow(normalized, 0.7); // Make quieter sounds more visible
+
+      levels.push(scaled);
+    }
+
+    setAudioLevels(levels);
+    animationFrameRef.current = requestAnimationFrame(visualizeAudio);
+  };
+
+  const startAudioVisualization = async (stream: MediaStream) => {
+    try {
+      audioContextRef.current = new (window.AudioContext || (window as any).webkitAudioContext)();
+      analyserRef.current = audioContextRef.current.createAnalyser();
+      const source = audioContextRef.current.createMediaStreamSource(stream);
+      source.connect(analyserRef.current);
+
+      // Higher FFT size for better frequency resolution
+      analyserRef.current.fftSize = 2048;
+      // Lower smoothing for more responsive visualization
+      analyserRef.current.smoothingTimeConstant = 0.6;
+
+      // Start visualization loop
+      visualizeAudio();
+    } catch (error) {
+      console.error('Error setting up audio visualization:', error);
+    }
+  };
+
+  const handleVoiceInput = async () => {
+    if (!recognitionRef.current) {
+      alert('Speech recognition is not supported in your browser. Please use Chrome, Edge, or Safari.');
+      return;
+    }
+
+    if (isListening) {
+      recognitionRef.current.stop();
+      stopAudioVisualization();
+      setIsListening(false);
+    } else {
+      try {
+        // Request microphone permission
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+        // Start audio visualization
+        await startAudioVisualization(stream);
+
+        // Start speech recognition after permission is granted
+        recognitionRef.current.start();
+        setIsListening(true);
+      } catch (error: any) {
+        console.error('Error starting speech recognition:', error);
+        if (error.name === 'NotAllowedError' || error.name === 'PermissionDeniedError') {
+          alert('Microphone access was denied. Please allow microphone access to use voice input.');
+        } else {
+          alert('Could not access microphone. Please check your browser settings.');
+        }
+        setIsListening(false);
+      }
+    }
+  };
+
   return (
     <div className="fixed inset-0 w-screen h-screen bg-black flex flex-col overflow-hidden relative" style={{ overscrollBehavior: 'none' }}>
+      {/* Full Screen Sound Wave Visualization Overlay */}
+      {isListening && (
+        <div className="fixed inset-0 w-screen h-screen bg-black/95 z-50 flex flex-col items-center justify-center">
+          {/* Large circular background glow */}
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-[500px] h-[500px] bg-gray-500/10 rounded-full blur-3xl animate-pulse"></div>
+          </div>
+
+          {/* Sound Wave Bars */}
+          <div className="flex items-end justify-center gap-1.5 mb-12 relative z-10 h-64">
+            {audioLevels.map((level, i) => {
+              // Create symmetric pattern from center
+              const centerIndex = audioLevels.length / 2;
+              const mirrorLevel = i < centerIndex ? audioLevels[audioLevels.length - 1 - i] : level;
+
+              return (
+                <div
+                  key={i}
+                  className="w-1.5 bg-gradient-to-t from-gray-500 via-gray-400 to-gray-300 rounded-full transition-all duration-50 shadow-sm shadow-gray-400/30"
+                  style={{
+                    height: `${Math.max(8, mirrorLevel * 250)}px`,
+                  }}
+                />
+              );
+            })}
+          </div>
+
+          {/* Listening Text */}
+          <p className="text-white text-2xl font-light mb-8 animate-pulse">Listening...</p>
+
+          {/* Stop Button */}
+          <button
+            onClick={handleVoiceInput}
+            className="w-16 h-16 rounded-full bg-gray-600 hover:bg-gray-700 transition-colors flex items-center justify-center shadow-lg shadow-gray-600/50"
+            aria-label="Stop listening"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24" className="w-8 h-8">
+              <rect x="6" y="6" width="12" height="12" rx="1" />
+            </svg>
+          </button>
+        </div>
+      )}
+
       {/* White Glowing Effect - Right Side to Left - Extended Natural Atmospheric Fade */}
       <div className="absolute top-0 right-0 w-full h-full pointer-events-none overflow-hidden">
         {/* Extended layered glow effects for smooth, natural fade reaching further left */}
@@ -201,7 +406,8 @@ export default function ChatPage() {
                   {inputValue.trim() === '' ? (
                     <button
                       type="button"
-                      className="flex-shrink-0 text-black/70 hover:text-black transition-colors"
+                      onClick={handleVoiceInput}
+                      className={`flex-shrink-0 transition-colors ${isListening ? 'text-gray-500 animate-pulse' : 'text-black/70 hover:text-black'}`}
                       aria-label="Voice input"
                     >
                       <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
@@ -272,7 +478,13 @@ export default function ChatPage() {
                     blueOffset={20}
                     className="!px-4 sm:!px-6 !py-2 sm:!py-3"
                   >
-                    <p className="text-sm sm:text-base text-white">{message.text}</p>
+                    {message.sender === 'bot' ? (
+                      <div className="text-sm sm:text-base">
+                        <MarkdownMessage content={message.text} />
+                      </div>
+                    ) : (
+                      <p className="text-sm sm:text-base text-white">{message.text}</p>
+                    )}
                     <p className="text-xs mt-1 text-white/60">
                       {message.timestamp.toLocaleTimeString([], {
                         hour: '2-digit',
@@ -320,7 +532,8 @@ export default function ChatPage() {
               {inputValue.trim() === '' ? (
                 <button
                   type="button"
-                  className="flex-shrink-0 text-black/70 hover:text-black transition-colors"
+                  onClick={handleVoiceInput}
+                  className={`flex-shrink-0 transition-colors ${isListening ? 'text-gray-500 animate-pulse' : 'text-black/70 hover:text-black'}`}
                   aria-label="Voice input"
                 >
                   <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">

@@ -6,8 +6,10 @@ const ContactSection: React.FC = () => {
   // Contact form state
   const [formData, setFormData] = useState({
     name: '',
+    company_web: '',
     email: '',
     phone: '',
+    topic: '',
     description: ''
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -27,7 +29,7 @@ const ContactSection: React.FC = () => {
     try {
       await submitContactForm(formData);
       setSubmitStatus('success');
-      setFormData({ name: '', email: '', phone: '', description: '' });
+      setFormData({ name: '', company_web: '', email: '', phone: '', topic: '', description: '' });
     } catch (error) {
       console.error('Failed to submit contact form:', error);
       setSubmitStatus('error');
@@ -58,10 +60,6 @@ const ContactSection: React.FC = () => {
       <div className="absolute w-full h-full" style={{ top: 0, left: 0, right: 0, bottom: '-50px', minHeight: '200vh', backgroundColor: 'rgba(0, 0, 0, 0.4)' }}></div>
 
       <div className="w-full mx-auto px-4 sm:px-6 md:px-8 lg:px-24 relative z-10 flex flex-col justify-center py-8 sm:py-12 md:py-16">
-        <h2 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl xl:text-7xl font-light text-white text-center mb-6 sm:mb-8 md:mb-10 lg:mb-12" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
-          Let's get in touch.
-        </h2>
-
         {/* Contact Card Container */}
         <div className="max-w-7xl mx-auto w-full flex items-center pb-8 sm:pb-12">
           <GlassSurface
@@ -146,6 +144,17 @@ const ContactSection: React.FC = () => {
                 />
               </div>
 
+              <div>
+                <input
+                  type="url"
+                  name="company_web"
+                  value={formData.company_web}
+                  onChange={handleInputChange}
+                  placeholder="Company Website"
+                  className="w-full px-0 py-2 sm:py-3 md:py-4 bg-transparent border-0 border-b-2 border-white/30 text-white text-sm sm:text-base md:text-lg placeholder-gray-400 focus:outline-none focus:border-white transition-all duration-300"
+                />
+              </div>
+
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 sm:gap-6 md:gap-8">
                 <div>
                   <input
@@ -169,6 +178,17 @@ const ContactSection: React.FC = () => {
                     className="w-full px-0 py-2 sm:py-3 md:py-4 bg-transparent border-0 border-b-2 border-white/30 text-white text-sm sm:text-base md:text-lg placeholder-gray-400 focus:outline-none focus:border-white transition-all duration-300"
                   />
                 </div>
+              </div>
+
+              <div>
+                <input
+                  type="text"
+                  name="topic"
+                  value={formData.topic}
+                  onChange={handleInputChange}
+                  placeholder="Subject"
+                  className="w-full px-0 py-2 sm:py-3 md:py-4 bg-transparent border-0 border-b-2 border-white/30 text-white text-sm sm:text-base md:text-lg placeholder-gray-400 focus:outline-none focus:border-white transition-all duration-300"
+                />
               </div>
 
               <div>

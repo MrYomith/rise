@@ -1,0 +1,51 @@
+.logo-loop-container {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+}
+
+.logo-loop-container.horizontal {
+  height: 250px;
+  min-height: 250px;
+}
+
+.logo-loop-container.vertical {
+  width: 200px;
+  height: 100%;
+}
+
+.logo-loop-container::before,
+.logo-loop-container::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 100px;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.logo-loop-container::before {
+  left: 0;
+  background: linear-gradient(to right, black, transparent);
+}
+
+.logo-loop-container::after {
+  right: 0;
+  background: linear-gradient(to left, black, transparent);
+}
+
+.logo-item {
+  cursor: pointer;
+  user-select: none;
+  will-change: transform, opacity;
+  flex-shrink: 0;
+  display: inline-block;
+}
+
+.logo-item img {
+  max-width: none;
+  height: auto;
+  display: block;
+  flex-shrink: 0;
+}

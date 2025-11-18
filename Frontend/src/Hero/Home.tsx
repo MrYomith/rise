@@ -72,13 +72,16 @@ const Home: React.FC<HomeProps> = ({ onSectionChange }) => {
       <AboutSection />
 
       {/* Logo Carousel */}
-      <section className="w-full bg-black">
-        <LogoCarousel logos={[
-          { src: '/vegalogo.png', alt: 'Vega Logo' },
-          { src: '/CG-Logo.png', alt: 'CG Logo' },
-          { src: '/Aigrow.png', alt: 'AI Grow' },
-          { src: '/vite.png', alt: 'Rise Logo' },
-        ]} />
+      <section className="w-full bg-black relative z-10">
+        <div className="absolute inset-0 bg-black z-0"></div>
+        <div className="relative z-10">
+          <LogoCarousel logos={[
+            { src: '/vegalogo.png', alt: 'Vega Logo', url: 'https://www.vega.lk/' },
+            { src: '/CG-Logo.png', alt: 'CG Logo', url: 'https://codegen.co.uk/' },
+            { src: '/Aigrow.png', alt: 'AI Grow', url: 'https://aigrow.lk/' },
+            { src: '/vite.png', alt: 'Rise Logo', url: '/' },
+          ]} />
+        </div>
       </section>
 
       {/* Service Cards with ScrollStack */}

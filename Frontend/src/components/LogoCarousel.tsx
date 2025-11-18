@@ -3,6 +3,7 @@ import { motion } from "framer-motion";
 interface Logo {
   src: string;
   alt: string;
+  url?: string;
 }
 
 interface LogoCarouselProps {
@@ -18,13 +19,14 @@ export default function LogoCarousel({
   gap = 72,
   speed = 30,
 }: LogoCarouselProps) {
+
   const Row = () => (
     <div className="flex items-center" style={{ gap: `${gap}px` }}>
       {logos.map((l, i) => {
         const isVegaLogo = l.src.includes('vegalogo.png');
         const logoHeight = isVegaLogo ? height * 2.6 : height;
 
-        return (
+        const logoImage = (
           <img
             key={`${l.alt}-${i}`}
             src={l.src}
@@ -35,6 +37,23 @@ export default function LogoCarousel({
             loading="eager"
           />
         );
+
+        if (l.url) {
+          const isExternal = l.url.startsWith('http');
+          return (
+            <a
+              key={`${l.alt}-${i}`}
+              href={l.url}
+              target={isExternal ? "_blank" : undefined}
+              rel={isExternal ? "noopener noreferrer" : undefined}
+              className="cursor-pointer pointer-events-auto"
+            >
+              {logoImage}
+            </a>
+          );
+        }
+
+        return logoImage;
       })}
     </div>
   );

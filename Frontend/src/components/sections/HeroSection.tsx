@@ -50,7 +50,7 @@ const HeroSection: React.FC<HeroSectionProps> = ({ scrollProgress }) => {
           }}
         >
           <h1
-            className="text-4xl sm:text-6xl md:text-8xl lg:text-[130px] font-light text-white text-center animate-slide-up-bottom-to-top -mt-20 sm:-mt-40 md:-mt-60 lg:-mt-100"
+            className="text-6xl sm:text-7xl md:text-8xl lg:text-[130px] font-light text-white text-center animate-slide-up-bottom-to-top -mt-40 sm:-mt-56 md:-mt-72 lg:-mt-100"
             style={{
               fontFamily: "'IM Fell English', serif",
               transform: 'scaleX(1.0)',

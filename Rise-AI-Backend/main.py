@@ -14,11 +14,7 @@ from utils import logger
 
 app = FastAPI()
 
-
-app.include_router(vector_store_router)
-app.include_router(guest_router)
-
-
+# Add CORS middleware first, before routers
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],  # Allow all origins for development (remove in production)
@@ -26,6 +22,10 @@ app.add_middleware(
     allow_methods=["*"],  # Allow all HTTP methods
     allow_headers=["*"],  # Allow all headers
 )
+
+# Include routers after middleware
+app.include_router(vector_store_router)
+app.include_router(guest_router)
 
 
 @app.get("/")

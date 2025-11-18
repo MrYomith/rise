@@ -2,8 +2,12 @@ import Particles from '../Particles';
 
 const AboutSection: React.FC = () => {
   return (
-    <section id="about" className="w-full py-8 sm:py-12 md:py-20 lg:py-28 relative bg-black">
-      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <section id="about" className="w-full py-8 sm:py-12 md:py-20 lg:py-28 relative bg-black z-10">
+      {/* Solid black background layer */}
+      <div className="absolute inset-0 bg-black z-0"></div>
+
+      {/* Particles layer */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none z-5">
         <Particles
           particleColors={['#ffffff', '#ffffff']}
           particleCount={400}
@@ -15,6 +19,8 @@ const AboutSection: React.FC = () => {
           disableRotation={false}
         />
       </div>
+
+      {/* Content layer */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 relative z-10">
         <h2 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-light text-center mb-6 sm:mb-8 md:mb-12 text-white" style={{ fontFamily: "'Cormorant Garamond', serif" }}>
           About Us
